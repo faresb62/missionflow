@@ -6,9 +6,9 @@ services:
     plan: free
     healthCheckPath: /health
     dockerfilePath: ./docker/Dockerfile.backend
-    dockerContext: ./
+    dockerContext: .
     envVars:
-      - key: ASPNETCORE_ENVIRONMENT
+      - key: ASDNETCORE_ENVIRONMENT
         value: Production
       - key: ConnectionStrings__DefaultConnection
         fromDatabase:
