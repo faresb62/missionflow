@@ -24,10 +24,9 @@ services:
         value: "1440"
       - key: Cors__Origins
         value: "http://localhost:5173"
-      - key: DB_PASSWORD
-        value: M!ssi0nFl0w-DB-2026!
-  - type: database
-    name: missionflow-db
+
+databases:
+  - name: missionflow-db
     databaseName: missionflow
     plan: free
     region: frankfurt
