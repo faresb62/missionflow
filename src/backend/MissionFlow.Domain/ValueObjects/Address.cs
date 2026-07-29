@@ -2,10 +2,10 @@ using System.Text.RegularExpressions;
 
 namespace MissionFlow.Domain.ValueObjects;
 
-/// <<summary>
+/// <summary>
 /// Represents an Algerian address value object.
 /// </summary>
-public sealed partial class Address : ValueObject
+public sealed class Address : ValueObject
 {
     public string Street { get; }
     public string? Complement { get; }
@@ -16,9 +16,12 @@ public sealed partial class Address : ValueObject
 
     public Address(string street, string city, string wilaya, string? complement = null, string? postalCode = null, string country = "Algérie")
     {
-        JustifyNonEmpty(street, nameof(street));
-        JustifyNonEmpty(city, nameof(city));
-        JustifyNonEmpty(wilaya, nameof(wilaya));
+        if (string.IsNullOrWhiteSpace(street))
+            throw new ArgumentException("Street is required", nameof(street));
+        if (string.IsNullOrWhiteSpace(city))
+            throw new ArgumentException("City is required", nameof(city));
+        if (string.IsNullOrWhiteSpace(wilaya))
+            throw new ArgumentException("Wilaya is required", nameof(wilaya));
 
         Street = street.Trim();
         Complement = complement?.Trim();
@@ -38,11 +41,5 @@ public sealed partial class Address : ValueObject
     }
 
     override string ToString()
-        => $", {City}, {Wilaya}{PostalCode is not null? $" {PostalCode}" : ""}, {Country}";
-
-vVide JustifyNonEmpty(string value, string param)
-    {
-        if (string.IsNullOrWhiteSpace(value))
-            throw new ArgumentException($param + " is required", param);
-    }
+        => $"{Street}{(Complement is not null ? $", {Complement}" : "")}, {City}, {Wilaya}{(PostalCode is not null ? $" {PostalCode}" : "")}, {Country}";
 }
