@@ -1,15 +1,15 @@
 services:
   - type: web
     name: missionflow-api
-    runtime: docker
+    runtime: node
     region: frankfurt
     plan: free
     healthCheckPath: /health
-    dockerfilePath: ./docker/Dockerfile.backend
-    dockerContext: .
+    buildCommand: dotnet restore src/backend/MissionFlow.Api/MissionFlow.Api.csproj && dotnet publish src/backend/MissionFlow.Api/MissionFlow.Api.csproj -c Release -o out
+    startCommand: dotnet out/MissionFlow.Api.dll
     envVars:
-      - key: ASDNETCORE_ENVIRONMENT
-        value: Production
+      - key: ASPNETCORE_URLS
+        value: http://+:10000
       - key: ConnectionStrings__DefaultConnection
         fromDatabase:
           name: missionflow-db
