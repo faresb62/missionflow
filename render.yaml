@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: missionflow-api
+    runtime: docker
+    region: frankfurt
+    plan: free
+    healthCheckPath: /health
+    dockerfilePath: ./docker/Dockerfile.backend
+    dockerContext: ./
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ConnectionStrings__DefaultConnection
+        fromDatabase:
+          name: missionflow-db
+          property: connectionString
+      - key: Jwt__Secret
+        generateValue: true
+      - key: Jwt__Issuer
+        value: missionflow-api.onrender.com
+      - key: Jwt__Audience
+        value: missionflow-api.onrender.com
+      - key: Jwt__ExpirationMinutes
+        value: "1440"
+      - key: Cors__Origins
+        value: "http://localhost:5173"
+      - key: DB_PASSWORD
+        value: M!ssi0nFl0w-DB-2026!
+  - type: database
+    name: missionflow-db
+    databaseName: missionflow
+    plan: free
+    region: frankfurt
+    ipAllowList: []
