@@ -1,0 +1,30 @@
+# =====================================================
+# ASP.NET Core 9 API Dockerfile (Context: repo root)
+# =====================================================
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+WORKDIR /src
+
+# Copy project files
+COPY src/backend/MissionFlow.Api/MissionFlow.Api.csproj src/backend/MissionFlow.Api/
+COPY src/backend/MissionFlow.Application/MissionFlow.Application.csproj src/backend/MissionFlow.Application/
+COPY src/backend/MissionFlow.Domain/MissionFlow.Domain.csproj src/backend/MissionFlow.Domain/
+COPY src/backend/MissionFlow.Infrastructure/MissionFlow.Infrastructure.csproj src/backend/MissionFlow.Infrastructure/
+
+# Restore
+RUN dotnet restore src/backend/MissionFlow.Api/MissionFlow.Api.csproj
+
+# Copy all source
+COPY src/ src/
+
+# Publish
+RUN dotnet publish src/backend/MissionFlow.Api/MissionFlow.Api.csproj -c Release -o /app/out
+
+# Runtime
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
+WORKDIR /app
+COPY --from=build /app/out .
+
+ENV ASPNETCORE_URLS=http://+:8080
+EXPOSE 8080
+
+ENTRYPOINT ["dotnet", "MissionFlow.Api.dll"]
